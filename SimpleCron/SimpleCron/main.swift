@@ -4,10 +4,28 @@
 //
 //  Created by Robin Macharg on 09/08/2021.
 //
+// Read a simplified crontab-format file from stdin and, taking a supplied 24hr time, generate the next time that
+// each line of the crontab would run its command.
 
 import Foundation
 
-var crontab: [CronEntry] = []
+// MARK: - Supporting data structures
+
+/**
+ * Represents the type of error that can occur at an application level, with associated result codes
+ */
+enum ApplicationError: Int32, Error {
+    case invalidArgument = 1
+    case invalidCrontab = 2
+}
+
+/**
+ * A relative day value - today or tomorrow
+ */
+enum RelativeDay: String {
+    case today = "today"
+    case tomorrow = "tomorrow"
+}
 
 /**
  * Represents a crontab time specification: minutes or hours.  A wildcard ('*') can also be represented
@@ -19,11 +37,20 @@ enum CronTime {
     }
     case number(Int)
     case wildcard
+
+    var intValue: Int? {
+        switch self {
+        case .number(let value):
+            return value
+        default:
+            return nil
+        }
+    }
 }
 
 extension CronTime {
     
-    enum CronTimeErrors: Error {
+    enum CronTimeError: Error {
         case invalidNumber(_ string: String)
     }
     
@@ -32,19 +59,20 @@ extension CronTime {
         switch value {
         case "*":
             self = .wildcard
-        
+
+        // Parse a string to Int, constrained by whether it represents hours or minutes
         case _ where Int(value) != nil:
             guard let intValue = Int(value),
                   type == .minute
                     ? (0..<60).contains(intValue)
                     : (0..<24).contains(intValue) else
             {
-                throw CronTimeErrors.invalidNumber(value)
+                throw CronTimeError.invalidNumber(value)
             }
             self = .number(intValue)
         
         default:
-            throw CronTimeErrors.invalidNumber(value)
+            throw CronTimeError.invalidNumber(value)
         }
     }
 }
@@ -54,13 +82,82 @@ extension CronTime {
  */
 struct CronEntry {
     
-    enum CronEntryErrors: Error {
+    enum CronEntryError: Error {
         case invalidCronEntry
     }
     
     let minutes: CronTime
     let hour: CronTime
     let command: String
+}
+
+// MARK: - Helper Functions
+
+/**
+ * Read stdin and return as an array of lines
+ */
+func readLinesFromStdIn() -> [String] {
+    var lines: [String] = []
+    while let line = readLine() {
+        lines.append(line)
+    }
+    return lines
+}
+
+/**
+ * For Testing
+ */
+func synthesizeValidTestLines() -> [String] {
+    return [
+        "30 1 /bin/run_me_daily",
+        "45 * /bin/run_me_hourly",
+        "* * /bin/run_me_every_minute",
+        "* 19 /bin/run_me_sixty_times"
+    ]
+}
+
+/**
+ * For Testing
+ */
+func synthesizeInvalidTestLines() -> [String] {
+    return [
+        "1 /bin/run_me_daily",
+        "45 * /bin/run_me_hourly",
+        "a * /bin/run_me_every_minute",
+        "* 19 /bin/run_me_sixty_times"
+    ]
+}
+
+/**
+ * Parse a 24hr time string into an (hours, minutes) tuple
+ */
+func parseCurrentTime() throws -> CurrentTime {
+    if CommandLine.arguments.count == 2 {
+        let components = CommandLine.arguments[1].components(separatedBy: ":")
+        if components.count == 2 {
+            return (
+                try CronTime(type: .hour, value: components[0]),
+                try CronTime(type: .minute, value: components[1]))
+        }
+    }
+
+    throw ApplicationError.invalidArgument
+}
+
+/**
+ * Read a simplified crontab from stdin
+ */
+func parseCronTab(_ lines: [String]) throws -> [CronEntry] {
+    var crontab: [CronEntry] = []
+
+    for line in lines {
+        // Exit if there's a parsing failure
+        guard let cronEntry = try? parseLine(line) else {
+            throw ApplicationError.invalidCrontab
+        }
+        crontab.append(cronEntry)
+    }
+    return crontab
 }
 
 /**
@@ -79,17 +176,95 @@ func parseLine(_ line: String) throws -> CronEntry {
     }
 
     // Fallthrough
-    throw CronEntry.CronEntryErrors.invalidCronEntry
+    throw CronEntry.CronEntryError.invalidCronEntry
 }
 
-// Read stdin and populate a crontab structure
-while let line = readLine() {
-    // Exit is there's a parsing failure
-    guard let cronEntry = try? parseLine(line) else {
-        exit(1)
+// MARK: - Main algorithm
+
+/// A named tuple type to represent the current time
+typealias CurrentTime = (hour: CronTime, minutes: CronTime)
+
+/// The supplied "current" time
+var currentTime: CurrentTime
+
+/// Stores the crontab
+var crontab: [CronEntry]
+
+// The main application logic
+do {
+
+    // MARK: - Handle inputs
+
+    do {
+        currentTime = try parseCurrentTime()
     }
-    
-    crontab.append(cronEntry)
+    catch {
+        throw ApplicationError.invalidArgument
+    }
+
+    do {
+        var lines: [String]
+//        lines = synthesizeInvalidTestLines()
+//        lines = synthesizeValidTestLines()
+        lines = readLinesFromStdIn()
+        crontab = try parseCronTab(lines)
+    }
+    catch {
+        throw ApplicationError.invalidCrontab
+    }
+
+    // MARK: - Generate the output
+
+    for line in crontab {
+//        print(line)
+
+        // Resolve the hour and minutes into concrete values - wildcards pick up the current time
+
+        let currentHour = currentTime.hour.intValue!
+        let currentMinutes = currentTime.minutes.intValue!
+
+        print("current: \(currentHour):\(currentMinutes)")
+
+        var resolvedHour: Int
+        var resolvedMinutes: Int
+        var relativeDay: RelativeDay
+
+        switch line.hour {
+        case .wildcard:
+            resolvedHour = currentHour
+        case .number(let hour):
+            resolvedHour = hour
+        }
+
+        switch line.minutes {
+        case .wildcard:
+            resolvedMinutes = currentMinutes
+        case .number(let hour):
+            resolvedMinutes = hour
+        }
+
+        print(resolvedHour, resolvedMinutes)
+
+        // Determine if the time is today or tomorrow
+
+        relativeDay = .today
+        if resolvedHour < currentHour {
+            relativeDay = .tomorrow
+        }
+//        else if resolvedMinutes <= currentMinutes {
+//            relativeDay = .tomorrow
+//        }
+
+        // Output
+        print("\(resolvedHour):\(resolvedMinutes) \(relativeDay.rawValue) - \(line.command)")
+
+    }
+
+
+
+}
+catch let e as ApplicationError {
+    exit(e.rawValue)
 }
 
-print(crontab)
+//print(crontab, currentTime)

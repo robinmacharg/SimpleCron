@@ -23,11 +23,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		000052E826C26FCF000D875B /* input.crontab */ = {isa = PBXFileReference; lastKnownFileType = text; name = input.crontab; path = ../input.crontab; sourceTree = "<group>"; };
+		000052EB26C2878F000D875B /* invalid.crontab */ = {isa = PBXFileReference; lastKnownFileType = text; path = invalid.crontab; sourceTree = "<group>"; };
 		000C3D4926C1D04E00C58ECC /* SimpleCron */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SimpleCron; sourceTree = BUILT_PRODUCTS_DIR; };
 		000C3D4C26C1D04E00C58ECC /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
-		000C3D5426C1D0CA00C58ECC /* spec__1_.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = spec__1_.txt; path = ../spec__1_.txt; sourceTree = "<group>"; };
+		000C3D5426C1D0CA00C58ECC /* spec.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = spec.txt; path = ../spec.txt; sourceTree = "<group>"; };
 		000C3D5526C1D0CA00C58ECC /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
-		000C3D5726C1E3F300C58ECC /* input.crontab */ = {isa = PBXFileReference; lastKnownFileType = text; path = input.crontab; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,9 +45,10 @@
 		000C3D4026C1D04E00C58ECC = {
 			isa = PBXGroup;
 			children = (
-				000C3D5726C1E3F300C58ECC /* input.crontab */,
+				000052E826C26FCF000D875B /* input.crontab */,
+				000052EB26C2878F000D875B /* invalid.crontab */,
 				000C3D5526C1D0CA00C58ECC /* README.md */,
-				000C3D5426C1D0CA00C58ECC /* spec__1_.txt */,
+				000C3D5426C1D0CA00C58ECC /* spec.txt */,
 				000C3D4B26C1D04E00C58ECC /* SimpleCron */,
 				000C3D4A26C1D04E00C58ECC /* Products */,
 			);
@@ -251,7 +253,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 69VQ8X8JJ7;
+				DEVELOPMENT_TEAM = X32PPV2GRB;
 				ENABLE_HARDENED_RUNTIME = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -261,10 +263,11 @@
 		000C3D5226C1D04E00C58ECC /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 69VQ8X8JJ7;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
