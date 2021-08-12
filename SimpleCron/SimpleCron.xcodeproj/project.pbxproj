@@ -24,11 +24,13 @@
 
 /* Begin PBXFileReference section */
 		000052E826C26FCF000D875B /* input.crontab */ = {isa = PBXFileReference; lastKnownFileType = text; name = input.crontab; path = ../input.crontab; sourceTree = "<group>"; };
-		000052EB26C2878F000D875B /* invalid.crontab */ = {isa = PBXFileReference; lastKnownFileType = text; path = invalid.crontab; sourceTree = "<group>"; };
+		000052EB26C2878F000D875B /* invalid.crontab */ = {isa = PBXFileReference; lastKnownFileType = text; name = invalid.crontab; path = ../invalid.crontab; sourceTree = "<group>"; };
 		000C3D4926C1D04E00C58ECC /* SimpleCron */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SimpleCron; sourceTree = BUILT_PRODUCTS_DIR; };
 		000C3D4C26C1D04E00C58ECC /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		000C3D5426C1D0CA00C58ECC /* spec.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = spec.txt; path = ../spec.txt; sourceTree = "<group>"; };
 		000C3D5526C1D0CA00C58ECC /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		003B214F26C52C7700B834FD /* edgeCases.crontab */ = {isa = PBXFileReference; lastKnownFileType = text; name = edgeCases.crontab; path = ../edgeCases.crontab; sourceTree = "<group>"; };
+		003B215026C5370400B834FD /* README_submission.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README_submission.md; path = ../README_submission.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,8 +47,10 @@
 		000C3D4026C1D04E00C58ECC = {
 			isa = PBXGroup;
 			children = (
+				003B215026C5370400B834FD /* README_submission.md */,
 				000052E826C26FCF000D875B /* input.crontab */,
 				000052EB26C2878F000D875B /* invalid.crontab */,
+				003B214F26C52C7700B834FD /* edgeCases.crontab */,
 				000C3D5526C1D0CA00C58ECC /* README.md */,
 				000C3D5426C1D0CA00C58ECC /* spec.txt */,
 				000C3D4B26C1D04E00C58ECC /* SimpleCron */,
@@ -252,9 +256,11 @@
 		000C3D5126C1D04E00C58ECC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = X32PPV2GRB;
 				ENABLE_HARDENED_RUNTIME = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.macharg.simplecron;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
