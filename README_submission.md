@@ -5,7 +5,7 @@ This program parses a simplified crontab-format file and outputs the next time e
 
 Any questions should be addressed to Robin Macharg: robin.macharg@gmail.com
 
-The program is a single Swift file.  It has been developed on a MacBook Pro running Big Sur and Xcode 12.5.
+The program is [a single Swift file](SimpleCron/SimpleCron/main.swift).  It has been developed on a MacBook Pro running Big Sur and Xcode 12.5.
 
 It can be run directly on a suitably configured Mac without pre-building from the command line.  An example invocation (where `$` 
 represents the prompt) would look like :
